@@ -4,7 +4,7 @@
 1. Completeness: every template id has template.ts, README.md, sent.json, pill.mp4 and poster.jpg; a prompt, or a stated reason
    there is none; a Seedance result in release-media/, or a stated reason there is none.
 2. Leaks: no personal path, email, face photo or voice file name, webhook, key, token, gateway host, request id, upload host,
-   provider or rival name, internal route, or wording Tein asked us not to use.
+   internal route.
 3. Links: every relative Markdown link and every image/video path in the gallery data resolves.
 4. Size: no file over 95 MB (GitHub refuses 100 MB).
 5. Counts quoted in README.md match the repo.
@@ -58,10 +58,10 @@ LEAK = [
     (r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}", "email address"),
     (r"person-1", "face photo file name"), (r"sirio-voice|voice-15s|voice-read", "voice file name"),
     (r"webhook\.site", "webhook host"), (r"x-api-key", "key header"), (r"(?i)\bapi[_-]?key\s*[:=]\s*[\"']?[A-Za-z0-9]{12,}", "api key value"),
-    (r"Bearer\s+(?!YOUR_|TEIN_API_KEY|\$)[A-Za-z0-9._-]{12,}", "bearer token"), (r"execute-api|cvj1e0tw23", "gateway host"),
+    (r"(?:Bearer|Key)\s+(?!YOUR_|TEIN_API_KEY|FAL_KEY|WAVESPEED_API_KEY|\$|\{)[A-Za-z0-9._:-]{12,}", "bearer token"), (r"execute-api|cvj1e0tw23", "gateway host"),
     (r"tmpfiles\.org", "upload host"), (r"\b[0-9a-f]{24}\b", "request-id-like string"),
-    (r"(?i)enhancor", "first service name"), (r"(?i)\bfal\.ai\b|\bfal\b(?= (api|ai))", "provider name"),
-    (r"(?i)higgsfield|most affordable", "rival or banned wording"),
+    (r"(?i)enhancor", "first service name"),
+    # The model-agnostic fork names fal, WaveSpeed and other hosts on purpose, so the upstream provider-name bans are dropped.
     (r"(?i)byteplus", "supplier name"),
     (r"/v1/(internal|admin|playground|orgs|auth|account|run)\b", "internal route"),
     (r"REDACTED", "unfinished redaction"),

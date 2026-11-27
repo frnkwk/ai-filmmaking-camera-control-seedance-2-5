@@ -1,0 +1,38 @@
+{
+  "id": "h3-max-3d",
+  "label": "MiniMax H3 Max, 3D to video (fal): built for previs clips like the pill clip",
+  "api": "fal",
+  "endpoint": "minimax/h3-max/3d-to-video",
+  "auth_env": "FAL_KEY",
+  "docs": "docs/providers.md#minimax-h3-max-3d-to-video-fal",
+  "status": "untested with the pill method",
+  "tags": {"video": "the source video", "image": "reference image {n}", "audio": null},
+  "fields": {
+    "prompt": "prompt",
+    "video": "video_url",
+    "video_single": true,
+    "image": "reference_image_urls"
+  },
+  "fixed": {},
+  "quality": {
+    "draft": {"resolution": "480P"},
+    "final": {"resolution": "1080P"}
+  },
+  "limits": {
+    "prompt_chars": 2000,
+    "duration": null,
+    "videos": 1, "video_each_s": [0, 15], "video_total_s": 15,
+    "images": 8,
+    "audios": 0,
+    "files_total": null,
+    "shots": 32
+  },
+  "ratios": null,
+  "seed": false,
+  "price": {"usd_per_unit": 0.05, "checked": "2026-11-27", "source": "fal pricing for minimax/h3-max/3d-to-video (billed in units; check the unit on fal before budgeting)"},
+  "notes": [
+    "The output length and aspect ratio follow the source video. There are no duration or ratio fields.",
+    "The prompt is a short 'scene intent' (2000 characters at most). The template prompts are 5000+ characters, so write a short one and pass it with --prompt-file. tools/seedance/lean_v3.py builds a short prompt from a scene file.",
+    "No audio references. Speaking shots need another provider."
+  ]
+}

@@ -1,13 +1,15 @@
-# AI filmmaking camera control with Seedance 2.5 and three.js: the pill pipeline
+# AI filmmaking camera control with three.js, for any reference-video model: the pill pipeline
 
-**Direct the camera of an AI film made with Seedance 2.5, with a 3D camera you wrote in code.** 137 filmmaking camera moves: dolly, crane, orbit, whip pan, FPV, one-takes, action and famous shots. The move, speed, framing and cuts come from your code, not from the model's guess. The model still makes the people and the place.
+> **This is a model-agnostic fork** of [sirioberati/ai-filmmaking-camera-control-seedance-2-5](https://github.com/sirioberati/ai-filmmaking-camera-control-seedance-2-5). The engine, templates and results are the original's, made and tested with Seedance 2.5. The fork adds provider profiles and a request builder so the same templates can go to **MiniMax H3 Max** (fal), **Sand AI MAGI-2** (WaveSpeed), Seedance 2.5 (Tein) or any model you add a profile for. See [docs/providers.md](docs/providers.md).
+
+**Direct the camera of an AI film, with a 3D camera you wrote in code.** 137 filmmaking camera moves: dolly, crane, orbit, whip pan, FPV, one-takes, action and famous shots. The move, speed, framing and cuts come from your code, not from the model's guess. The model still makes the people and the place.
 
 <p align="center"><img src="docs/assets/hero-three-stages.gif" alt="Left: the 3D pill clip we send. Middle: the same move drawn as a sketch. Right: the real video Seedance 2.5 made" width="100%"></p>
 <p align="center"><sub>Left: the pill clip we send. Middle: the sketch route, the same move drawn. Right: the real video Seedance 2.5 made from it.</sub></p>
 
 The trick is one sentence: **a reference video carries two things, where the camera goes and how the bodies move, and the model copies both. So give it a camera to follow and nobody to copy.** Every person and product in the 3D clip is a striped pill. The pill gives the model the place, the size, the facing and the timing, and has no body to copy. The prompt says what everything really is.
 
-**Run it on Tein:** Seedance 2.5 is generated through [Tein](https://tein.ai). [Sign up at tein.ai](https://tein.ai), create an API key, and use the Tein MCP or API (setup in [docs/tein-endpoint.md](docs/tein-endpoint.md), the full reference in [docs/tein/](docs/tein/)). This repo never stores a key.
+**Pick a model:** any video model that takes a reference video and follows its camera. Profiles ship for MiniMax H3 Max (reference to video, and 3D to video), Sand AI MAGI-2, and Seedance 2.5 on Tein: [docs/providers.md](docs/providers.md). Seedance on Tein is the one every result in this repo was made with ([docs/tein-endpoint.md](docs/tein-endpoint.md)). This repo never stores a key.
 
 This repo is the whole pipeline: the three.js engine, **137 templates** with their code, pill clips, prompts and Seedance results, the 24 places, what we learned, and the Tein setup for generating the videos.
 
@@ -75,13 +77,28 @@ tools/render-pill.sh CAM06-Orbit        # a 7 s, 24 fps, 21:9 pill clip, written
 
 The `pill.mp4` files in this repo are smaller gallery copies (mostly 960 wide); the render script above makes the full 1280x534 clip, and `sent.json` records the size that was sent.
 
-Open `templates/CAM06-Orbit/`: `template.ts` is the shot as code, `prompts/` holds the prompts (`sent.json` says which are the text that was sent and which are recovered or rebuilt copies), and `sent.json` holds the references in order and the settings. Send it as a draft through Tein's Seedance 2.5 (see [docs/tein-endpoint.md](docs/tein-endpoint.md)): the pill clip is `reference_video`, your photo is `reference_image`. Judge the draft against the pill clip before you finalize anything.
+Open `templates/CAM06-Orbit/`: `template.ts` is the shot as code, `prompts/` holds the prompts (`sent.json` says which are the text that was sent and which are recovered or rebuilt copies), and `sent.json` holds the references in order and the settings. Build a request for your model and send it as a draft:
+
+```bash
+python3 tools/generate/build_request.py CAM06-Orbit --provider h3-max \
+  --url @video1=https://.../CAM06-Orbit.mp4 --url @image1=https://.../your-photo.jpg
+python3 tools/generate/submit.py .work/requests/CAM06-Orbit.video.h3-max.draft.json        # shows it; add --yes to send
+```
+
+The pill clip is the reference video, your photo the reference image; the builder renames the prompt's `@video1` / `@image1` tags for the model and checks its limits. Judge the draft against the pill clip before you make a final.
 
 **Build your own template** in about 12 lines: [docs/build-your-own-template.md](docs/build-your-own-template.md).
 
-## Use it with Tein's MCP or API
+## Send it to a model
 
-Generating a video goes through Tein's Seedance 2.5, either as the Tein MCP or as the API. Both need a Tein key from tein.ai; this repo never stores one. The setup is in [docs/tein-endpoint.md](docs/tein-endpoint.md): getting a key, the two MCP servers, the request for a template, drafts and finalizing, limits and costs. A separate helper project (an MCP and a skill that guide a beginner through all of this) is not part of this repo.
+| Profile | Model | Key | Notes |
+|---|---|---|---|
+| `h3-max` | MiniMax H3 Max, reference to video (fal) | `FAL_KEY` | up to 15 s; 480P draft runs; seed |
+| `h3-max-3d` | MiniMax H3 Max, 3D to video (fal) | `FAL_KEY` | made for previs clips; short prompt (2000 chars); no audio |
+| `magi-2` | Sand AI MAGI-2 (WaveSpeed) | `WAVESPEED_API_KEY` | up to 30 s; 1080p only, no draft; seed |
+| `seedance-2-5` | Seedance 2.5 (Tein) | `TEIN_API_KEY` | tested; draft and finalize ([docs/tein-endpoint.md](docs/tein-endpoint.md)) |
+
+Only Seedance 2.5 has been tested with these templates; the others are untested and the prompts may need adjusting. What differs between them (tags, lengths, drafts, prices) and how to add another model: [docs/providers.md](docs/providers.md). The scripts: [tools/generate/README.md](tools/generate/README.md).
 
 ## What is in the repo
 
@@ -90,6 +107,7 @@ Generating a video goes through Tein's Seedance 2.5, either as the Tein MCP or a
 | `engine/cinematic/` | The renderer: three.js inside Remotion, the stand-ins, the rigs, the checks. The CC0 rig is in `public/kit/`. |
 | `templates/<ID>/` | One folder per template: `template.ts`, `pill.mp4`, `preview.gif`, `prompts/`, `sent.json`, `README.md`, `reproduce.md`, and the sketch sheet where that route was used. 75 pill clips use the single capsule and 62 the pin (a head on a slim body); each README says which. |
 | `docs/` | The method, the why pages, every rule, the failures and fixes, the prompt anatomy, the Seedance and Tein notes, costs, QA. Start with [docs/idea.md](docs/idea.md). |
+| `providers/`, `tools/generate/` | One profile per video model, and the scripts that build and send a template's request for any of them. |
 | `tools/seedance/` | The sketch-sheet maker, the prompt builders and gates, and the video checks (camera, cuts, framing, speech, mouth). |
 | `answers/` | 137 questions about the method, each answered with its evidence and a status; 4 are marked UNPROVEN. |
 | `environments/` | The 24 place references and their moods. |
@@ -110,4 +128,4 @@ Large result videos are release downloads, not files in git: download `camera-co
 
 Code, prompts, notes and the pill clips are MIT ([LICENSE](LICENSE)). The rig is CC0 by Quaternius. Remotion has its own licence: free for individuals and small companies, a company licence for larger for-profit teams. Read [NOTICE.md](NOTICE.md) before you use this at work: it also covers the camera presets, the faces in the examples and the brand marks in the product shots.
 
-Made by Sirio Berati. Rendered with three.js and Remotion. Examples made with Seedance 2.5.
+Made by Sirio Berati. Rendered with three.js and Remotion. Examples made with Seedance 2.5. The provider layer is this fork's addition.

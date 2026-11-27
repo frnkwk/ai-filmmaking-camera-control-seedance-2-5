@@ -1,0 +1,41 @@
+{
+  "id": "magi-2",
+  "label": "Sand AI MAGI-2, reference to video (WaveSpeed)",
+  "api": "wavespeed",
+  "endpoint": "https://api.wavespeed.ai/api/v3/sand-ai/magi-2/reference-to-video",
+  "auth_env": "WAVESPEED_API_KEY",
+  "docs": "docs/providers.md#sand-ai-magi-2-wavespeed",
+  "status": "untested with the pill method",
+  "tags": {"video": "@Video{n}", "image": "@Image{n}", "audio": "@Audio{n}"},
+  "fields": {
+    "prompt": "prompt",
+    "video": "videos",
+    "image": "images",
+    "audio": "audios",
+    "duration": "duration",
+    "ratio": "aspect_ratio",
+    "seed": "seed"
+  },
+  "fixed": {"generate_audio": true},
+  "quality": {
+    "draft": {},
+    "final": {}
+  },
+  "limits": {
+    "prompt_chars": 15000,
+    "duration": [4, 30],
+    "duration_integer": true,
+    "videos": 5, "video_each_s": [2, 30], "video_total_s": 30,
+    "images": 10,
+    "audios": 5, "audio_each_s": [2, 30], "audio_total_s": 30,
+    "files_total": null
+  },
+  "ratios": ["16:9", "9:16", "1:1", "4:3", "3:4", "21:9"],
+  "seed": true,
+  "price": {"usd_per_output_second": 0.08, "checked": "2026-11-27", "source": "WaveSpeed MAGI-2 reference-to-video docs"},
+  "notes": [
+    "Output is always 1080p: there is no cheaper draft. Start with the shortest template you can.",
+    "WaveSpeed documents @Image1 in prompts; @Video1 and @Audio1 follow the same pattern but are not documented. Check the first result for the pill appearing in the video.",
+    "Over-long references are trimmed by the service rather than refused."
+  ]
+}

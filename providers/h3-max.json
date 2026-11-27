@@ -1,0 +1,40 @@
+{
+  "id": "h3-max",
+  "label": "MiniMax H3 Max, reference to video (fal)",
+  "api": "fal",
+  "endpoint": "minimax/h3-max/reference-to-video",
+  "auth_env": "FAL_KEY",
+  "docs": "docs/providers.md#minimax-h3-max-fal",
+  "status": "untested with the pill method",
+  "tags": {"video": "Video {n}", "image": "Image {n}", "audio": "Audio {n}"},
+  "fields": {
+    "prompt": "prompt",
+    "video": "reference_video_urls",
+    "image": "reference_image_urls",
+    "audio": "reference_audio_urls",
+    "duration": "duration",
+    "ratio": "aspect_ratio",
+    "seed": "seed"
+  },
+  "fixed": {"prompt_expansion_mode": "disabled"},
+  "quality": {
+    "draft": {"resolution": "480P"},
+    "final": {"resolution": "1080P"}
+  },
+  "limits": {
+    "prompt_chars": 50000,
+    "duration": [0.92, 15],
+    "duration_integer": false,
+    "videos": 3, "video_each_s": [2, 15], "video_total_s": 15,
+    "images": 9,
+    "audios": 3, "audio_each_s": [2, 15], "audio_total_s": 15,
+    "files_total": 12
+  },
+  "ratios": ["21:9", "16:9", "4:3", "1:1", "3:4", "9:16", "adaptive"],
+  "seed": true,
+  "price": {"usd_per_output_second": 0.05, "checked": "2026-11-27", "source": "fal pricing for minimax/h3-max/reference-to-video"},
+  "notes": [
+    "Prompt expansion is turned off so the long template prompt is used as written. Set prompt_expansion_mode yourself to try otherwise.",
+    "There is no draft/finalize pair: a draft is a 480P run. Re-run the same request at 1080P with the draft's seed to get a close, not identical, final."
+  ]
+}

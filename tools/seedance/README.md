@@ -1,6 +1,6 @@
 # tools/seedance: sketch sheets, prompt builders and checks
 
-Scripts that sit between the engine and a video service. They read and write local files. None of them sends, uploads, queues or downloads anything: sending is described in `docs/tein-endpoint.md` and done by you or the MCP.
+Scripts that sit between the engine and a video service. They read and write local files. None of them sends, uploads, queues or downloads anything: sending is done by `tools/generate/` (any model, see `docs/providers.md`), by you, or by an MCP.
 
 Run everything from the repo root. Paths below use `CAM06-Orbit`. Output goes to `.work/` (ignored by git) unless you pass `--out`.
 
