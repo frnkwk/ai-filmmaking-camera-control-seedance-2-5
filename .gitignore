@@ -6,3 +6,4 @@ out/
 .env
 .env.*
 release-media/
+.venv/
